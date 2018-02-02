@@ -24,3 +24,4 @@ def EquivalentWords(start,finish):
 
 alll=EquivalentWords('bounce','kettle')
 print(alll)
+#this code works only in a straight line and to accept some deviations it should be faced recursively in a process that would require to many comparisons
