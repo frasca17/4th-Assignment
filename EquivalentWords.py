@@ -1,26 +1,49 @@
 from collections import defaultdict
-from itertools import groupby
-file=open('C:/Users/aless/PycharmProjects/4th-Assignment/words_alpha.txt')
-dic=file.read().splitlines()
+import networkx as nx
+from itertools import combinations
+
+file = open('words_alpha.txt')
+dictionary = file.read().splitlines()
 file.close()
-d=defaultdict(list)
-for word in dic:
-    d[len(word)].append(word)
 
-def hdistance(x,y):
-    n=sum(1 for i,j in zip(x,y) if i!=j)
-    return n
+#grouped all the words in the dictionary on the base of their lenght in a set of sudictionaries, need to do so for speeding up the simple version
+subdicts = defaultdict(list)
+for word in dictionary:
+    subdicts[len(word)].append(word)
 
-def EquivalentWords(start,finish):
-    l=d[len(start)]
-    hd=hdistance(start,finish)
-    dict=defaultdict(list)
-    for i in range(1,hd):
-        j=hd-i
-        for ind,word in enumerate(l):
-            if hdistance(start,word)==i and hdistance(finish,word)==j:
-                dict[i].append(word)
-    return dict
+def equivalentWords(first, last):
+    '''Converts first into last (words of same lenght) only by one substitution at a time substitution
+    and only if the intermediate steps of the pathway are present in the dictionary of english words words_alpha.txt.
+    Returns the pathway'''
 
-alll=EquivalentWords('bounce','kettle')
-print(alll)
+    if len(first)!=len(last):
+        raise ValueError('Words inserted are of different lengths, no possible path only substituting letters')
+
+    #Protograph construction:
+
+    subdict = subdicts[len(first)]
+    protograph = {}
+    for word in subdict:
+        clusters = []
+        for i in range(len(word)):
+            clusters.append(word[:i] + '*' + word[i + 1:])
+        for cluster in clusters:
+            if cluster not in protograph:
+                protograph[cluster] = [word]
+            elif word not in protograph[cluster]:
+                protograph[cluster].append(word)
+
+    #Graph construction:
+
+    G = nx.Graph()
+    for cluster in protograph.keys():
+        G.add_edges_from(combinations(protograph[cluster], 2))
+
+    path=nx.shortest_path(G,first,last)
+
+    return path
+
+
+#Just an example:
+print(' --> '.join(equivalentWords('kettle','bounce')))
+
