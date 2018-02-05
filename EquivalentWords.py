@@ -1,4 +1,3 @@
-#imports and preparatory steps
 from collections import defaultdict
 import networkx as nx
 from itertools import combinations
