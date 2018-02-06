@@ -17,3 +17,5 @@ player who is left with a uni-nucleotide sequence of an arbitrary
 length (i.e., the sequence containing only one of 4 possible
 nucleotides) loses. Who will win? Describe the winning strategy
 for each nA, nT , nC , and nG .
+
+For further informations please visit our Wiki
